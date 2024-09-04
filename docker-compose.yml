@@ -1,0 +1,18 @@
+version: "3"
+services:
+  db:
+    image: postgres:13.2-alpine
+    restart: always
+    container_name: "real-time-chat-db"
+    ports:
+      - "54321:5432"
+    environment:
+      - POSTGRES_DB=real-time-chat
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:
+
+
