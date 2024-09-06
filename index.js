@@ -27,6 +27,7 @@ app.use(cookieParser());
 const JWT_SECRET = process.env.JWT_SECRET;
 
 //Routes
+//Keeping routes and business logic in index.js for simplicity since this is a small project
 app.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
