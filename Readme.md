@@ -14,20 +14,20 @@ This is a real-time chat application built with Express, Prisma, PostgreSQL, Rea
 
 ## Technologies Used
 
-- **Backend**: 
+- **Backend**:
   - Node.js with Express.js
   - Prisma ORM
   - PostgreSQL Database
   - Socket.IO for real-time communication
-- **Frontend**: 
+- **Frontend**:
   - React.js
   - Axios for API requests
   - Socket.IO Client
-- **Authentication**: 
+- **Authentication**:
   - JWT (JSON Web Token)
-- **Styling**: 
+- **Styling**:
   - CSS
-- **Containerization**: 
+- **Containerization**:
   - Docker
 
 ## Prerequisites
@@ -41,14 +41,14 @@ This is a real-time chat application built with Express, Prisma, PostgreSQL, Rea
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/real-time-chat.git
+git clone https://github.com/sandipbgn/real-time-chat.git
 cd real-time-chat
 ```
 
 ### 2. Setup Environment Variables
 
 - Copy the `.env.example` file to `.env`:
-  
+
 ```bash
 cp .env.example .env
 ```
@@ -72,7 +72,7 @@ This command will build the Docker images for both the backend and frontend, set
 Once the containers are up and running, you can access the application at:
 
 - **Frontend**: `http://localhost:8000`
-- **Backend API**: `http://localhost:8000/api` (if applicable)
+- **Backend API**: `http://localhost:8000/{endpoints}`
 
 ### 3. Managing Containers
 
@@ -133,11 +133,9 @@ npm start
 
 3. Access the frontend at `http://localhost:3000`.
 
-
 ## Environment Variables
 
 The application requires several environment variables to run. These are provided in the `.env.example` file. Ensure you create a `.env` file in the root directory with the following variables:
 
 - `DATABASE_URL`: Connection string for the PostgreSQL database.
 - `JWT_SECRET`: Secret key for JWT authentication.
-- Other variables as needed.
