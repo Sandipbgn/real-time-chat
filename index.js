@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 const http = require('http');
 const validator = require('validator');
 const setupSocketIO = require('./src/socketio');
+const path = require("path");
+
 require('dotenv').config();
 
 const app = express();
@@ -24,11 +26,7 @@ app.use(cookieParser());
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Routes
-app.get('/', (req, res) => {
-    res.send('Hello from the chat app backend!');
-});
-
+//Routes
 app.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -86,15 +84,20 @@ app.post('/login', async (req, res) => {
 
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
         res.cookie('token', token, { httpOnly: true });
-        res.json({ message: 'Logged in successfully!', token });
+        res.json({ message: 'Logged in successfully!', token, userId: user.id });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Login failed' });
     }
 });
 
+app.use(express.static(path.join(__dirname, "client", "build")));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
+});
+
 // Listen on the HTTP server, not app
-const PORT = process.env.PORT || 8888;
+const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
