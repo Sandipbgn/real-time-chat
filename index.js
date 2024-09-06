@@ -5,17 +5,26 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const http = require('http');
+const validator = require('validator');
+const setupSocketIO = require('./src/socketio');
+require('dotenv').config();
 
 const app = express();
 const prisma = new PrismaClient();
+const server = http.createServer(app);
+
+setupSocketIO(server);
+
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+const JWT_SECRET = process.env.JWT_SECRET;
+
 // Routes
-// Basic route for testing the server
 app.get('/', (req, res) => {
     res.send('Hello from the chat app backend!');
 });
@@ -23,13 +32,15 @@ app.get('/', (req, res) => {
 app.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
+    if (!password) {
+        return res.status(400).json({ error: 'Password is required' });
+    }
+
     try {
-        // Validate email format
         if (email && !validator.isEmail(email)) {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
-        // Check if username or email is already taken
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [
@@ -43,7 +54,6 @@ app.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Username or email already taken' });
         }
 
-        // Encrypt the password
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await prisma.user.create({
             data: {
@@ -60,7 +70,6 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// User login route
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -77,15 +86,15 @@ app.post('/login', async (req, res) => {
 
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
         res.cookie('token', token, { httpOnly: true });
-        res.json({ message: 'Logged in successfully!' });
+        res.json({ message: 'Logged in successfully!', token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Login failed' });
     }
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+// Listen on the HTTP server, not app
+const PORT = process.env.PORT || 8888;
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
