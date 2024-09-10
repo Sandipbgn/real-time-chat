@@ -42,4 +42,4 @@ COPY --from=build /app/client/build ./client/build
 EXPOSE 8000
 
 # Start the Node.js app
-CMD ["node", "index.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node index.js"]
